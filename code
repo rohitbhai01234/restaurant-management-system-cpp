@@ -1,0 +1,152 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+// admin: Rohit / 1234
+
+string savedCustomerPass = "";
+bool isPrime = false;
+
+string item1 = "Burger", item2 = "Pizza", item3 = "Sandwich";
+int price1 = 100, price2 = 200, price3 = 150;
+int primeDiscount = 10;
+string restaurantName = "My Restaurant";
+
+bool adminLogin() {
+    string u, p;
+    cout << "Admin Username: ";
+    cin >> u;
+    cout << "Admin Password: ";
+    cin >> p;
+    return (u == "Rohit" && p == "1234");
+}
+
+void adminMenu() {
+    int ch;
+    while (true) {
+        cout << "\n--- Admin Menu ---\n";
+        cout << "1. Edit Menu Items\n";
+        cout << "2. Edit Prices\n";
+        cout << "3. Edit Prime Discount\n";
+        cout << "4. Edit Restaurant Name\n";
+        cout << "5. Reset Customer Password\n";
+        cout << "6. Exit Admin\n";
+        cout << "Enter Choice: ";
+        cin >> ch;
+
+        if (ch == 1) {
+            cout << "Enter new name for Item1: ";
+            cin >> item1;
+            cout << "Enter new name for Item2: ";
+            cin >> item2;
+            cout << "Enter new name for Item3: ";
+            cin >> item3;
+        }
+        else if (ch == 2) {
+            cout << "Enter new price of " << item1 << ": ";
+            cin >> price1;
+            cout << "Enter new price of " << item2 << ": ";
+            cin >> price2;
+            cout << "Enter new price of " << item3 << ": ";
+            cin >> price3;
+        }
+        else if (ch == 3) {
+            cout << "Enter new Prime Discount (%): ";
+            cin >> primeDiscount;
+        }
+        else if (ch == 4) {
+            cout << "Enter new Restaurant Name: ";
+            cin >> restaurantName;
+        }
+        else if (ch == 5) {
+            savedCustomerPass = "";
+            cout << "Customer Password Reset.\n";
+        }
+        else if (ch == 6) {
+            break;
+        }
+        else {
+            cout << "Invalid Choice.\n";
+        }
+    }
+}
+
+bool customerLogin() {
+    if (savedCustomerPass == "") {
+        string pass;
+        cout << "Set Your Customer Password: ";
+        cin >> pass;
+        savedCustomerPass = pass;
+        cout << "Password Saved. Login Again.\n";
+        return false;
+    } else {
+        string pass;
+        cout << "Enter Customer Password: ";
+        cin >> pass;
+        if (pass == savedCustomerPass) {
+            char ch;
+            cout << "Are you Prime Customer? (y/n): ";
+            cin >> ch;
+            isPrime = (ch == 'y' || ch == 'Y');
+            return true;
+        }
+        return false;
+    }
+}
+
+int main() {
+    int choice;
+    cout << "1. Admin Login\n2. Customer Login\nEnter Choice: ";
+    cin >> choice;
+
+    if (choice == 1) {
+        if (adminLogin()) {
+            cout << "Admin Login Successful.\n";
+            adminMenu();
+        } else {
+            cout << "Invalid Admin Credentials.\n";
+        }
+        return 0;
+    }
+
+    if (choice == 2) {
+        if (!customerLogin()) {
+            cout << "Login Failed.\n";
+            return 0;
+        }
+        cout << "Customer Login Successful.\n";
+    }
+
+    int itemChoice, qty;
+    int price = 0;
+
+    cout << "\n--- " << restaurantName << " Menu ---\n";
+    cout << "1. " << item1 << " - " << price1 << "\n";
+    cout << "2. " << item2 << " - " << price2 << "\n";
+    cout << "3. " << item3 << " - " << price3 << "\n";
+    cout << "Enter Item Number: ";
+    cin >> itemChoice;
+
+    cout << "Enter Quantity: ";
+    cin >> qty;
+
+    if (itemChoice == 1) price = price1;
+    else if (itemChoice == 2) price = price2;
+    else if (itemChoice == 3) price = price3;
+    else {
+        cout << "Invalid Item.\n";
+        return 0;
+    }
+
+    int total = price * qty;
+    cout << "Total Amount: " << total << "\n";
+
+    if (isPrime) {
+        float discount = total * (primeDiscount / 100.0);
+        total -= discount;
+        cout << "Prime Discount Applied: " << primeDiscount << "%\n";
+    }
+
+    cout << "Final Bill: " << total << "\n";
+    return 0;
+}
